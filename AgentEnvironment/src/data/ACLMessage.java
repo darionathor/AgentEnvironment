@@ -11,6 +11,16 @@ public class ACLMessage {
 	private Object ContentObj;
 	private HashMap<String,Object> UserArgs;
 	private String Language;
+	private String Encoding;
+	private String Ontology;
+	private String Protocol;
+	private String ConversationId;
+	private String ReplyWith;
+	private String inReplyTo;
+	private Long ReplyBy;
+	public ACLMessage() {
+		super();
+	}
 	public Enum getPerformative() {
 		return Performative;
 	}
@@ -101,12 +111,5 @@ public class ACLMessage {
 	public void setReplyBy(Long replyBy) {
 		ReplyBy = replyBy;
 	}
-	private String Encoding;
-	private String Ontology;
-	private String Protocol;
-	private String ConversationId;
-	private String ReplyWith;
-	private String inReplyTo;
-	private Long ReplyBy;
 	
 }

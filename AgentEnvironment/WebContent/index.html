@@ -8,20 +8,37 @@
 </head>
 <body>
 <div ng-app="myApp" ng-controller="myCtrl">
-
+<p>Klase<p>
 <select ng-model="selectedClass" ng-options="x for x in classes">
-</select>
-<select ng-model="selectedRunning" ng-options="x for x in running">
 </select>
  <input type="text" ng-model="name">
     <button ng-click="put()">PUT</button>
-    <button ng-click="del()">DELETE</button>
+<p>Aktivni agenti</p>
+<select ng-model="selectedRunning" ng-options="x for x in running">
+</select>
+    <button ng-click="dele()">DELETE</button>
+<p>Send message</p>
+<p>Sender</p><br>
+<select ng-model="selectedSender" ng-options="x for x in running">
+</select>
+<p>Reciever</p><br>
+<select ng-model="selectedReciever" ng-options="x for x in running">
+</select>
+<p>ReplyTo<p><br>
+<select ng-model="ReplyTo" ng-options="x for x in running">
+</select>
+<p>Content</p><br>
+ <input type="text" ng-model="Content">
+
+    <button ng-click="send()">SEND</button>
 </div>
 
 <script>
 var app = angular.module('myApp', []);
 app.controller('myCtrl', function($scope, $http) {
 	$scope.name="";
+	$scope.selectedClass="";
+	$scope.selectedRunning="";
     $scope.classes = [];
     $scope.running = [];
     $scope.put = function() {
@@ -32,28 +49,56 @@ app.controller('myCtrl', function($scope, $http) {
             console.log(data);
         }
       });
-      $scope.del = function() {
-          console.log("del")
+    }
+      $scope.dele = function() {
+          console.log("del");
             $.ajax({
             url: "rest/agents/running/"+$scope.selectedRunning,
             type: 'DELETE',
             success: function(data, status){
                 console.log(data);
-                console.log(selectedRunning);
+                console.log();
             }
           });
       }
     $.get("rest/agents/classes/", function(data, status){
         console.log(data);
-        $scope.classes=[];
+        $scope.classes=['mile'];
     });
     $.get("rest/agents/running/", function(data, status){
         console.log(data);
-        $scope.running=[];
+        $scope.running=['mile'];
     });
-
+    $scope.send = function() {
+        var obj={content:$scope.Content,
+				performative:null,
+				sender:null,
+				recievers:[],
+				replyTo:null,
+				contentObj:null,
+				userArgs:null,
+				language:null,
+				encoding:null,
+				ontology:null,
+				protocol:null,
+				conversationId:null,
+				replyWith:null,
+				inReplyTo:null,
+				replyBy:null
+                };
+        var data=JSON.stringify(obj);
+        console.log("send");
+          $.ajax({
+          url: "rest/messages",
+          type: 'POST',
+          success: function(data, status){
+              console.log(data);
+          },
+          data:data,
+          contentType:"application/json; charset=utf-8"
+        });
+    }
     
-    };
 });
 </script>
 </body>
