@@ -1,9 +1,13 @@
 package data;
 
 
-public class Agent {
+public abstract class Agent {
 	private AID id;
-	public void handleMessage(ACLMessage message){
-		
+	public abstract void handleMessage(ACLMessage message);
+	public AID getId() {
+		return id;
+	}
+	public void setId(AID id) {
+		this.id = id;
 	}
 }

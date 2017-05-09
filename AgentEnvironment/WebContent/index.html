@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Agent Environment Client</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<div ng-app="myApp" ng-controller="myCtrl">
+
+<select ng-model="selectedClass" ng-options="x for x in classes">
+</select>
+<select ng-model="selectedRunning" ng-options="x for x in running">
+</select>
+ <input type="text" ng-model="name">
+    <button ng-click="put()">PUT</button>
+    <button ng-click="del()">DELETE</button>
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope, $http) {
+	$scope.name="";
+    $scope.classes = [];
+    $scope.running = [];
+    $scope.put = function() {
+        $.ajax({
+        url: "rest/agents/running/"+$scope.selectedClass+"/"+$scope.name,
+        type: 'PUT',
+        success: function(data, status){
+            console.log(data);
+        }
+      });
+      $scope.del = function() {
+          console.log("del")
+            $.ajax({
+            url: "rest/agents/running/"+$scope.selectedRunning,
+            type: 'DELETE',
+            success: function(data, status){
+                console.log(data);
+                console.log(selectedRunning);
+            }
+          });
+      }
+    $.get("rest/agents/classes/", function(data, status){
+        console.log(data);
+        $scope.classes=[];
+    });
+    $.get("rest/agents/running/", function(data, status){
+        console.log(data);
+        $scope.running=[];
+    });
+
+    
+    };
+});
+</script>
+</body>
+</html>

@@ -28,4 +28,7 @@ public class AID {
 	public void setType(AgentType type) {
 		Type = type;
 	}
+	/*@Override
+	public boolean equals(Object object){
+	}*/
 }
