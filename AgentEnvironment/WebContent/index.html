@@ -14,18 +14,21 @@
  <input type="text" ng-model="name">
     <button ng-click="put()">PUT</button>
 <p>Aktivni agenti</p>
-<select ng-model="selectedRunning" ng-options="x for x in running">
+<select ng-model="selectedRunning" ng-options="x.name for x in running">
 </select>
     <button ng-click="dele()">DELETE</button>
 <p>Send message</p>
+<p>Performative</p><br>
+<select ng-model="selectedPerformative" ng-options="x for x in performatives">
+</select>
 <p>Sender</p><br>
-<select ng-model="selectedSender" ng-options="x for x in running">
+<select ng-model="selectedSender" ng-options="x.name for x in running">
 </select>
 <p>Reciever</p><br>
-<select ng-model="selectedReciever" ng-options="x for x in running">
+<select ng-model="selectedReciever" ng-options="x.name for x in running">
 </select>
 <p>ReplyTo<p><br>
-<select ng-model="ReplyTo" ng-options="x for x in running">
+<select ng-model="ReplyTo" ng-options="x.name for x in running">
 </select>
 <p>Content</p><br>
  <input type="text" ng-model="Content">
@@ -41,6 +44,7 @@ app.controller('myCtrl', function($scope, $http) {
 	$scope.selectedRunning="";
     $scope.classes = [];
     $scope.running = [];
+    $scope.performatives=[];
     $scope.put = function() {
         $.ajax({
         url: "rest/agents/running/"+$scope.selectedClass+"/"+$scope.name,
@@ -53,7 +57,7 @@ app.controller('myCtrl', function($scope, $http) {
       $scope.dele = function() {
           console.log("del");
             $.ajax({
-            url: "rest/agents/running/"+$scope.selectedRunning,
+            url: "rest/agents/running/"+$scope.selectedRunning.name,
             type: 'DELETE',
             success: function(data, status){
                 console.log(data);
@@ -63,17 +67,36 @@ app.controller('myCtrl', function($scope, $http) {
       }
     $.get("rest/agents/classes/", function(data, status){
         console.log(data);
-        $scope.classes=['mile'];
+        $scope.classes=[];
+        $.each(data,function(index,value){
+
+            $scope.classes.push(value.name);
+            })
     });
     $.get("rest/agents/running/", function(data, status){
         console.log(data);
-        $scope.running=['mile'];
+        $scope.running=[];
+        $.each(data,function(index,value){
+
+            $scope.running.push(value);
+            })
+    });
+    $.get("rest/messages/", function(data, status){
+        console.log(data);
+        $scope.performatives=[];
+        $.each(data,function(index,value){
+
+            $scope.performatives.push(value);
+            })
     });
     $scope.send = function() {
-        var obj={content:$scope.Content,
-				performative:null,
-				sender:null,
-				recievers:[],
+        var sender={name:$scope.selectedSender.name,host:{address:$scope.selectedSender.host.address,alias:$scope.selectedSender.host.alias},type:{module:$scope.selectedSender.type.module,name:$scope.selectedSender.type.name}}
+        var reciever={name:$scope.selectedReciever.name,host:{address:$scope.selectedReciever.host.address,alias:$scope.selectedReciever.host.alias},type:{module:$scope.selectedReciever.type.module,name:$scope.selectedReciever.type.name}}
+
+         var obj={content:$scope.Content,
+				performative:$scope.selectedPerformative,
+				sender:sender,
+				receivers:[reciever],
 				replyTo:null,
 				contentObj:null,
 				userArgs:null,

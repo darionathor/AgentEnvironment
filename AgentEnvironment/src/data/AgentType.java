@@ -3,6 +3,9 @@ package data;
 public class AgentType {
 	private String Name;
 	private String Module;
+	public AgentType() {
+		super();
+	}
 	public AgentType(String name, String module) {
 		super();
 		Name = name;

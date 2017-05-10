@@ -15,4 +15,7 @@ public class AgentCenter {
 	public void setAddress(String address) {
 		Address = address;
 	}
+	public AgentCenter() {
+		super();
+	}
 }

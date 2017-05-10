@@ -7,6 +7,9 @@ public class AID {
 	public String getName() {
 		return Name;
 	}
+	public AID() {
+		super();
+	}
 	public void setName(String name) {
 		Name = name;
 	}

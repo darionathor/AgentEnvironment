@@ -3,6 +3,7 @@ package communication;
 import java.util.ArrayList;
 
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -13,15 +14,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import agents.Ping;
+import agents.Pong;
 import data.ACLMessage;
 import data.AID;
 import data.Agent;
+import data.AgentCenter;
 import data.AgentType;
 import data.DataHolder;
 @Path("/")
 public class ClientAgentCenterRest {
 	
-	@EJB DataHolder data;
+	   DataHolder data= DataHolder.getInstance();
 	
 	@GET
 	@Path("/test")
@@ -42,6 +46,7 @@ public class ClientAgentCenterRest {
 		ArrayList<AID> aids= new ArrayList<AID>();
 		for(Agent a:data.running){
 			aids.add(a.getId());
+			System.out.println(a.getId().getName());
 		}
 		return aids;
 	}
@@ -49,6 +54,18 @@ public class ClientAgentCenterRest {
 	@Path("/agents/running/{type}/{name}")
 	public void putRunning(@PathParam("type") String type, @PathParam("name") String name){
 		System.out.println(type+" agent postavljen "+name);
+		if(type.equals("ping")){
+			Ping ping=new Ping();
+			ping.setId(new AID(name, new AgentCenter(), new AgentType("ping", "ping")));
+			data.running.add(ping);
+			System.out.println("PING DODAT");
+		}else if(type.equals("pong")){
+
+			Pong pong=new Pong();
+			pong.setId(new AID(name, new AgentCenter(), new AgentType("pong", "pong")));
+			data.running.add(pong);
+		}
+		
 		
 	}
 	@DELETE
@@ -67,20 +84,42 @@ public class ClientAgentCenterRest {
 	@Path("/messages")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void postMessages(ACLMessage message){
-		System.out.println("message postavljen");
+		System.out.println("message postavljen "+message.content);
 		for(Agent a:data.running){
-			for(AID aid:message.getRecievers()){
-				if(a.getId().equals(aid)){
 					a.handleMessage(message);
 				}
-			}
-		}
+			
+		
 		
 	}
 		
 	@GET
 	@Path("/messages")
-	public void getMessages(){
-		
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<String> getMessages(){
+		ArrayList<String> performatives=new ArrayList<String>();
+		performatives.add("ACCEPT_PROPOSAL");
+		performatives.add("AGREE");
+		performatives.add("CANCEL"); 
+		performatives.add("CALL_FOR_PROPOSAL"); 
+		performatives.add("CONFIRM");
+		performatives.add("DISCONFIRM");
+		performatives.add("FAILURE");
+		performatives.add("INFORM");
+		performatives.add("INFORM_IF");
+		performatives.add("INFORM_REF"); 
+		performatives.add("NOT_UNDERSTOOD"); 
+		performatives.add("PROPAGATE"); 
+		performatives.add("PROPOSE"); 
+		performatives.add("PROXY");
+		performatives.add("QUERY_IF");
+		performatives.add("QUERY_REF");
+		performatives.add("REFUSE");
+		performatives.add("REJECT_PROPOSAL");
+		performatives.add("REQUEST");
+		performatives.add("REQUEST_WHEN");
+		performatives.add("REQUEST_WHENEVER"); 
+		performatives.add("SUBSCRIBE");
+		return performatives;
 	}
 }
