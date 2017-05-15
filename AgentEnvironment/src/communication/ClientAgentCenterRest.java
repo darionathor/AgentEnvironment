@@ -2,8 +2,7 @@ package communication;
 
 import java.util.ArrayList;
 
-import javax.ejb.EJB;
-import javax.inject.Inject;
+import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -23,6 +22,7 @@ import data.AgentCenter;
 import data.AgentType;
 import data.DataHolder;
 @Path("/")
+@Stateless
 public class ClientAgentCenterRest {
 	
 	   DataHolder data= DataHolder.getInstance();
