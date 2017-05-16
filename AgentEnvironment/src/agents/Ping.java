@@ -30,11 +30,7 @@ public class Ping extends Agent {
 			msgToPong.performative=Performative.REQUEST;
 			msgToPong.sender = getId();
 			msgToPong.receivers.add(pongAid);
-			for(Agent a:data.running.values()){
-				if(a!=this)
-				a.handleMessage(msgToPong);
-			}
-			//msm().post(msgToPong);
+			post(msgToPong);
 		} else if (message.performative == Performative.INFORM) {
 			// wait for the message
 			// ACLMessage msgFromPong = receiveWait(0);
@@ -51,11 +47,8 @@ public class Ping extends Agent {
 			if (message.sender!=null || message.inReplyTo!=null) {
 				ACLMessage reply = message.makeReply(Performative.INFORM);
 				reply.userArgs = args;
-				for(Agent a:data.running.values()){
-					if(a!=this)
-					a.handleMessage(reply);
-				}
-				//msm().post(reply);
+				
+				post(reply);
 			}
 		}
 	}
