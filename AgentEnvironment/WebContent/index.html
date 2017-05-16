@@ -65,30 +65,36 @@ app.controller('myCtrl', function($scope, $http) {
             }
           });
       }
-    $.get("rest/agents/classes/", function(data, status){
-        console.log(data);
-        $scope.classes=[];
-        $.each(data,function(index,value){
-
-            $scope.classes.push(value.name);
-            })
-    });
-    $.get("rest/agents/running/", function(data, status){
-        console.log(data);
-        $scope.running=[];
-        $.each(data,function(index,value){
-
-            $scope.running.push(value);
-            })
-    });
-    $.get("rest/messages/", function(data, status){
-        console.log(data);
-        $scope.performatives=[];
-        $.each(data,function(index,value){
-
-            $scope.performatives.push(value);
-            })
-    });
+	    $.get("rest/agents/classes/", function(data, status){
+	        console.log(data);
+	      	$scope.$apply(function() {
+	        $scope.classes=[];
+	        $.each(data,function(index,value){
+	
+	            $scope.classes.push(value.name);
+	            })
+	        });
+	    });
+	    $.get("rest/agents/running/", function(data, status){
+	        console.log(data);
+	      	$scope.$apply(function() {
+	        $scope.running=[];
+	        $.each(data,function(index,value){
+	
+	            $scope.running.push(value);
+	            })
+	    });
+	    });
+	    $.get("rest/messages/", function(data, status){
+	        console.log(data);
+	      	$scope.$apply(function() {
+	        $scope.performatives=[];
+	        $.each(data,function(index,value){
+	
+	            $scope.performatives.push(value);
+	            })
+	    });
+	    });
     $scope.send = function() {
         var sender={name:$scope.selectedSender.name,host:{address:$scope.selectedSender.host.address,alias:$scope.selectedSender.host.alias},type:{module:$scope.selectedSender.type.module,name:$scope.selectedSender.type.name}}
         var reciever={name:$scope.selectedReciever.name,host:{address:$scope.selectedReciever.host.address,alias:$scope.selectedReciever.host.alias},type:{module:$scope.selectedReciever.type.module,name:$scope.selectedReciever.type.name}}

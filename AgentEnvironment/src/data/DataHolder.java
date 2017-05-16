@@ -1,6 +1,7 @@
 package data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.ejb.Singleton;
 
@@ -8,7 +9,7 @@ import agents.Ping;
 public class DataHolder {
 
 	public ArrayList<AgentType> classes=new ArrayList<AgentType>();
-	public ArrayList<Agent> running=new ArrayList<Agent>();
+	public HashMap<AID,Agent> running=new HashMap<AID,Agent>();
 	private static DataHolder instance;
 	public static DataHolder getInstance(){
 

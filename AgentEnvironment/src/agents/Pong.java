@@ -15,7 +15,7 @@ public class Pong extends Agent {
 		System.out.println("Message to Pong: " + message.content+" counter: "+counter);
 		ACLMessage reply = message.makeReply(Performative.INFORM);
 		reply.userArgs.put("pongCounter", ++counter);
-		for(Agent a:data.running){
+		for(Agent a:data.running.values()){
 			if(a!=this)
 			a.handleMessage(reply);
 		}

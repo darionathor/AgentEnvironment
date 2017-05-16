@@ -3,6 +3,13 @@ package communication;
 import java.util.ArrayList;
 
 import javax.ejb.Stateless;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.Queue;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -44,7 +51,7 @@ public class ClientAgentCenterRest {
 	public ArrayList<AID> getRunning(){
 		
 		ArrayList<AID> aids= new ArrayList<AID>();
-		for(Agent a:data.running){
+		for(Agent a:data.running.values()){
 			aids.add(a.getId());
 			System.out.println(a.getId().getName());
 		}
@@ -57,13 +64,13 @@ public class ClientAgentCenterRest {
 		if(type.equals("ping")){
 			Ping ping=new Ping();
 			ping.setId(new AID(name, new AgentCenter(), new AgentType("ping", "ping")));
-			data.running.add(ping);
+			data.running.put(ping.getId(),ping);
 			System.out.println("PING DODAT");
 		}else if(type.equals("pong")){
 
 			Pong pong=new Pong();
 			pong.setId(new AID(name, new AgentCenter(), new AgentType("pong", "pong")));
-			data.running.add(pong);
+			data.running.put(pong.getId(),pong);
 		}
 		
 		
@@ -72,9 +79,9 @@ public class ClientAgentCenterRest {
 	@Path("/agents/running/{aid}")
 	public void deleteRunning(@PathParam("aid") String aid){
 		System.out.println("agent zaustavljan");
-		for(Agent a:data.running){
+		for(Agent a:data.running.values()){
 			if(a.getId().getName().equals(aid)){
-				data.running.remove(a);
+				data.running.remove(a.getId());
 				break;
 			}
 		}
@@ -85,9 +92,47 @@ public class ClientAgentCenterRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void postMessages(ACLMessage message){
 		System.out.println("message postavljen "+message.content);
+		
+		Context context;
+		try {
+			context = new InitialContext();
+		
+		ConnectionFactory cf = (ConnectionFactory)
+				context.lookup("RemoteConnectionFactory");
+		final Queue queue = (Queue) context
+				.lookup("queue/mojQueue");
+
+		context.close();
+		Connection connection =
+		cf.createConnection("guest", "");
+		final javax.jms.Session session1 =
+		connection.createSession(false,
+		javax.jms.Session.AUTO_ACKNOWLEDGE);
+		connection.start();
+		/*MessageConsumer consumer =
+				session1.createConsumer(queue);
+				consumer.setMessageListener(this);*/
+				ObjectMessage msg = session1.createObjectMessage(message);
+
+				long sent = System.currentTimeMillis();
+
+				msg.setLongProperty("sent", sent);
+
+				MessageProducer producer =
+				session1.createProducer(queue);
+				producer.send(msg);
+				producer.close();
+				connection.stop();
+				connection.close();
+		
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+		/*
 		for(Agent a:data.running){
 					a.handleMessage(message);
-				}
+				}*/
 			
 		
 		
