@@ -63,13 +63,13 @@ public class ClientAgentCenterRest {
 		System.out.println(type+" agent postavljen "+name);
 		if(type.equals("ping")){
 			Ping ping=new Ping();
-			ping.setId(new AID(name, new AgentCenter(), new AgentType("ping", "ping")));
+			ping.setId(new AID(name, data.agentCenter, new AgentType("ping", "ping")));
 			data.running.put(ping.getId(),ping);
 			System.out.println("PING DODAT");
 		}else if(type.equals("pong")){
 
 			Pong pong=new Pong();
-			pong.setId(new AID(name, new AgentCenter(), new AgentType("pong", "pong")));
+			pong.setId(new AID(name, data.agentCenter, new AgentType("pong", "pong")));
 			data.running.put(pong.getId(),pong);
 		}
 		

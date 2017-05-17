@@ -24,7 +24,7 @@ public class Ping extends Agent {
 		if (message.performative == Performative.REQUEST) { // inital request
 			// send a request to the Pong agent
 			AgentType agClass = new AgentType("pong", "pong");
-			AgentCenter agCenter= new AgentCenter();
+			AgentCenter agCenter= data.agentCenter;
 			AID pongAid = new AID(message.content,agCenter, agClass);
 			ACLMessage msgToPong = new ACLMessage();
 			msgToPong.performative=Performative.REQUEST;
