@@ -12,8 +12,7 @@
     <artifactId>resteasy-jackson2-provider</artifactId>
     <version>3.0.8.Final</version>
     <scope>provided</scope>
-</dependency>
-    
+	</dependency>
   </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
