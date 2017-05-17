@@ -28,5 +28,9 @@ public class DataHolder {
 	public void setSecondaryServer() {
 		// TODO Auto-generated method stub
 		MainServer=false;
+		AgentCenter main=new AgentCenter();
+		main.setAddress("localhost:8080");
+		main.setAlias("localhost:8080");
+		centers.add(main);
 	}
 }
