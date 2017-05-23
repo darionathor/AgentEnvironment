@@ -52,7 +52,32 @@ public class StartupTimer {
 		}
 
     }
+	@Schedule(second="*/60",hour = "*", minute = "*", persistent = false)
+    protected void heartbeat(Timer timer)
+    {
+		DataHolder dh=DataHolder.getInstance();
+		for(AgentCenter ac:dh.centers)
+			if(ac!=dh.agentCenter)
+		try {
 
+			ClientRequest request = new ClientRequest(
+				"http://"+ac.getAddress()+"/AgentEnvironment/rest/node");
+			request.accept("application/json");
+			ObjectMapper om=new ObjectMapper();
+			String input = om.writeValueAsString(dh.agentCenter);
+
+			ClientResponse<String> response = request.get(String.class);
+
+			om.readValue(response.getEntity().getBytes(),AgentCenter.class);
+
+		  }  catch (Exception e) {
+
+			e.printStackTrace();
+			System.out.println("failed");
+			//TODO onfail
+		  }
+
+    }
 	@SuppressWarnings("deprecation")
 	private void performCenterHandshake() {
 		// TODO Auto-generated method stub

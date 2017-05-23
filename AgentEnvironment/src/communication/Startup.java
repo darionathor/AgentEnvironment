@@ -5,6 +5,7 @@ import javax.servlet.ServletContextListener;
 
 
 public class Startup implements ServletContextListener{
+	
 	@Override
 	   public void contextInitialized(ServletContextEvent contextEvent) {
 	        /* Do Startup stuff. */
@@ -15,5 +16,6 @@ public class Startup implements ServletContextListener{
 	   @Override
 	   public void contextDestroyed(ServletContextEvent contextEvent) {
 	        /* Do Shutdown stuff. */
+		   
 	   }
 }

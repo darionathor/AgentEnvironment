@@ -7,7 +7,7 @@ import data.AID;
 import data.Agent;
 import data.Performative;
 
-public class Initiatior extends Agent {
+public class Initiator extends Agent {
 	private int pendingProposals;
 	@Override
 	public void handleMessage(ACLMessage message) {

@@ -45,7 +45,21 @@ public class AgentCenterAgentCenterRest {
 			
 			if(data.MainServer){
 				//get agents/classes
-				ArrayList<AgentType> newClustersTypes=getAgentClasses(ac);
+				ArrayList<AgentType> newClustersTypes;
+				try {
+					newClustersTypes = getAgentClasses(ac);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					try {
+						newClustersTypes = getAgentClasses(ac);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						removeNode(ac);
+						return;
+					}
+				}
 				ArrayList<AgentType> actuallyNew=new ArrayList<AgentType>();
 				for(AgentType newType:newClustersTypes){
 					if(!data.classes.contains(newType))actuallyNew.add(newType);
@@ -53,21 +67,106 @@ public class AgentCenterAgentCenterRest {
 				}
 				postClasses(newClustersTypes);
 				//post node ostalim serverima
-				postNodeOthers(ac);
+				try {
+					postNodeOthers(ac);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					try {
+						postNodeOthers(ac);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						removeNode(ac);
+						return;
+					}
+				}
 				//post agents classes ako ih ima
 				if(actuallyNew.size()>0)
-					postClassesOthers(actuallyNew,ac);
+					try {
+						postClassesOthers(actuallyNew,ac);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						try {
+							postClassesOthers(actuallyNew,ac);
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+							removeNode(ac);
+							return;
+						}
+					}
 				//post node novom cvoru
 				if(data.centers.size()>1)
-					postNodesToNew(ac);
+					try {
+						postNodesToNew(ac);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						try {
+							postNodesToNew(ac);
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+							removeNode(ac);
+							return;
+						}
+					}
 				//post agents classes novom cvoru
-				postClassesToNew(ac);
+				try {
+					postClassesToNew(ac);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					try {
+						postClassesToNew(ac);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						removeNode(ac);
+						return;
+					}
+				}
 				//post agents running
-				postRunningtoNew(ac);
+				try {
+					postRunningtoNew(ac);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					try {
+						postRunningtoNew(ac);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						removeNode(ac);
+						return;
+					}
+				}
 			}
 		}
 	}
-	private void postRunningtoNew(AgentCenter ac) {
+	private void removeNode(AgentCenter ac) {
+		// TODO Auto-generated method stub
+		deleteNode(ac.getAlias());
+		for(AgentCenter center:data.centers)
+			if(!center.equals(ac))
+		try {
+
+			DataHolder dh=DataHolder.getInstance();
+			ClientRequest request = new ClientRequest(
+				"http://"+center.getAddress()+"/AgentEnvironment/rest/node/"+ac.getAlias());
+			ObjectMapper om=new ObjectMapper();
+
+			ClientResponse<String> response = request.delete();
+
+		  } catch (Exception e) {
+
+			e.printStackTrace();
+		  }
+		
+	}
+	private void postRunningtoNew(AgentCenter ac) throws Exception{
 		// TODO Auto-generated method stub
 		try {
 
@@ -95,21 +194,13 @@ public class AgentCenterAgentCenterRest {
 				System.out.println(output);
 			}*/
 
-		  } catch (MalformedURLException e) {
-
-			e.printStackTrace();
-
-		  } catch (IOException e) {
-
-			e.printStackTrace();
-
 		  } catch (Exception e) {
 
 			e.printStackTrace();
-
+			throw e;
 		  }
 	}
-	private void postClassesToNew(AgentCenter ac) {
+	private void postClassesToNew(AgentCenter ac)  throws Exception{
 		// TODO Auto-generated method stub
 		try {
 
@@ -137,21 +228,13 @@ public class AgentCenterAgentCenterRest {
 				System.out.println(output);
 			}*/
 
-		  } catch (MalformedURLException e) {
+		  }catch (Exception e) {
 
 			e.printStackTrace();
-
-		  } catch (IOException e) {
-
-			e.printStackTrace();
-
-		  } catch (Exception e) {
-
-			e.printStackTrace();
-
+			throw e;
 		  }
 	}
-	private void postNodesToNew(AgentCenter ac) {
+	private void postNodesToNew(AgentCenter ac)  throws Exception{
 		// TODO Auto-generated method stub
 		try {
 
@@ -179,21 +262,13 @@ public class AgentCenterAgentCenterRest {
 				System.out.println(output);
 			}*/
 
-		  } catch (MalformedURLException e) {
-
-			e.printStackTrace();
-
-		  } catch (IOException e) {
-
-			e.printStackTrace();
-
 		  } catch (Exception e) {
 
 			e.printStackTrace();
-
+			throw e;
 		  }
 	}
-	private void postClassesOthers(ArrayList<AgentType> actuallyNew, AgentCenter ac) {
+	private void postClassesOthers(ArrayList<AgentType> actuallyNew, AgentCenter ac)  throws Exception{
 		// TODO Auto-generated method stub
 		for(AgentCenter center:data.centers)
 			if(!center.equals(ac))
@@ -223,21 +298,13 @@ public class AgentCenterAgentCenterRest {
 				System.out.println(output);
 			}*/
 
-		  } catch (MalformedURLException e) {
-
-			e.printStackTrace();
-
-		  } catch (IOException e) {
-
-			e.printStackTrace();
-
 		  } catch (Exception e) {
 
 			e.printStackTrace();
-
+			throw e;
 		  }
 	}
-	private ArrayList<AgentType> getAgentClasses(AgentCenter ac) {
+	private ArrayList<AgentType> getAgentClasses(AgentCenter ac)  throws Exception{
 		// TODO Auto-generated method stub
 		try {
 
@@ -254,21 +321,16 @@ public class AgentCenterAgentCenterRest {
 			ArrayList<AgentType> al=om.readValue(response.getEntity().getBytes(), new TypeReference<ArrayList<AgentType>>() {
 			});
 			return al;
-		  } catch (IOException e) {
-
-			e.printStackTrace();
-
 		  } catch (Exception e) {
 
 			e.printStackTrace();
-
+			throw e;
 		  }
-		return null;
 
 		
 		
 	}
-	private void postNodeOthers(AgentCenter ac) {
+	private void postNodeOthers(AgentCenter ac)  throws Exception{
 		// TODO Auto-generated method stub
 		for(AgentCenter center:data.centers)
 			if(!center.equals(ac))
@@ -298,18 +360,10 @@ public class AgentCenterAgentCenterRest {
 				System.out.println(output);
 			}*/
 
-		  } catch (MalformedURLException e) {
-
-			e.printStackTrace();
-
-		  } catch (IOException e) {
-
-			e.printStackTrace();
-
 		  } catch (Exception e) {
 
 			e.printStackTrace();
-
+			throw e;
 		  }
 	}
 	@POST
