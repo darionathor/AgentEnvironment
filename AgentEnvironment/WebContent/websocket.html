@@ -130,12 +130,13 @@ app.controller('myCtrl', function($scope, $http) {
     $scope.send = function() {
         var sender={name:$scope.selectedSender.name,host:{address:$scope.selectedSender.host.address,alias:$scope.selectedSender.host.alias},type:{module:$scope.selectedSender.type.module,name:$scope.selectedSender.type.name}}
         var reciever={name:$scope.selectedReciever.name,host:{address:$scope.selectedReciever.host.address,alias:$scope.selectedReciever.host.alias},type:{module:$scope.selectedReciever.type.module,name:$scope.selectedReciever.type.name}}
-
+        var replyTo={name:$scope.ReplyTo.name,host:{address:$scope.ReplyTo.host.address,alias:$scope.ReplyTo.host.alias},type:{module:$scope.ReplyTo.type.module,name:$scope.ReplyTo.type.name}}
+		
          var obj={content:$scope.Content,
 				performative:$scope.selectedPerformative,
 				sender:sender,
 				receivers:[reciever],
-				replyTo:null,
+				replyTo:replyTo,
 				contentObj:null,
 				userArgs:null,
 				language:null,

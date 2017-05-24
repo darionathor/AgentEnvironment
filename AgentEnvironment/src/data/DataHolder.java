@@ -10,6 +10,7 @@ public class DataHolder {
 	public boolean MainServer=true;
 	public ArrayList<AgentType> classes=new ArrayList<AgentType>();
 	public HashMap<AID,Agent> running=new HashMap<AID,Agent>();
+	public HashMap<AgentCenter,ArrayList<AgentType>> supports=new HashMap<AgentCenter, ArrayList<AgentType>>();
 	public AgentCenter agentCenter=null;
 	public ArrayList<AgentCenter> centers=new ArrayList<AgentCenter>();
 	private static DataHolder instance;

@@ -1,15 +1,14 @@
 package communication;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.ejb.Timer;
+import javax.inject.Inject;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
@@ -19,10 +18,13 @@ import org.jboss.resteasy.client.ClientResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import data.AgentCenter;
+import data.AgentType;
 import data.DataHolder;
 
 @Stateless
 public class StartupTimer {
+	@Inject AgentCenterAgentCenterRest rest;
+	
 	@Schedule(second="*/10",hour = "*", minute = "*", persistent = false)
     protected void init(Timer timer)
     {
@@ -40,6 +42,13 @@ public class StartupTimer {
 			as.setAddress(host+":"+port);
 			as.setAlias(host+":"+port);
 			dh.agentCenter=as;
+
+			ArrayList<AgentType> classes= new ArrayList<AgentType>();
+			classes.add(new AgentType("ping", "ping"));
+			classes.add(new AgentType("pong", "pong"));
+			classes.add(new AgentType("initiator", "initiator"));
+			classes.add(new AgentType("participant", "participant"));
+			dh.supports.put(as, classes);
     		if(!port.equals(8080)){
     			System.out.println("secondary server");
     			dh.setSecondaryServer();
@@ -75,6 +84,25 @@ public class StartupTimer {
 			e.printStackTrace();
 			System.out.println("failed");
 			//TODO onfail
+			try {
+
+				ClientRequest request = new ClientRequest(
+					"http://"+ac.getAddress()+"/AgentEnvironment/rest/node");
+				request.accept("application/json");
+				ObjectMapper om=new ObjectMapper();
+				String input = om.writeValueAsString(dh.agentCenter);
+
+				ClientResponse<String> response = request.get(String.class);
+
+				om.readValue(response.getEntity().getBytes(),AgentCenter.class);
+
+			  }  catch (Exception e2) {
+
+				e.printStackTrace();
+				System.out.println("failed again");
+				rest.removeNode(ac);
+				//TODO onfail
+			  }
 		  }
 
     }

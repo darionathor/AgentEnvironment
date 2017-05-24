@@ -60,6 +60,7 @@ public class AgentCenterAgentCenterRest {
 						return;
 					}
 				}
+				data.supports.put(ac, newClustersTypes);
 				ArrayList<AgentType> actuallyNew=new ArrayList<AgentType>();
 				for(AgentType newType:newClustersTypes){
 					if(!data.classes.contains(newType))actuallyNew.add(newType);
@@ -146,7 +147,7 @@ public class AgentCenterAgentCenterRest {
 			}
 		}
 	}
-	private void removeNode(AgentCenter ac) {
+	public void removeNode(AgentCenter ac) {
 		// TODO Auto-generated method stub
 		deleteNode(ac.getAlias());
 		for(AgentCenter center:data.centers)
@@ -394,6 +395,39 @@ public class AgentCenterAgentCenterRest {
 		for(AgentCenter ac:data.centers){
 			if(ac.getAlias().equals(alias)){
 				data.centers.remove(ac);
+				
+				
+				for(AgentType at:data.supports.get(ac)){
+					boolean delete=true;
+					for(AgentCenter center: data.centers){
+						for(AgentType tajp: data.supports.get(center)){
+							if(tajp.equals(at)){
+								delete=false;
+								break;
+							}
+						}
+						if(delete==false)
+							break;
+					}
+					AgentCenter main=new AgentCenter();
+					main.setAddress("127.0.0.1:8080");
+					main.setAlias("127.0.0.1:8080");
+					for(AgentType tajp: data.supports.get(main)){
+						if(tajp.equals(at)){
+							delete=false;
+							break;
+						}
+					}
+					if(delete==false)
+						break;
+					if(delete)
+						data.classes.remove(at);
+				};
+				data.supports.remove(ac);
+				for(AID a: data.running.keySet()){
+					if(a.getHost().equals(ac))data.running.remove(a);
+				}
+				
 				break;
 			}
 		}

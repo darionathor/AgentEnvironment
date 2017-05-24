@@ -130,9 +130,38 @@ public class ClientAgentCenterRest {
 	@Path("/agents/running/{aid}")
 	public void deleteRunning(@PathParam("aid") String aid){
 		System.out.println("agent zaustavljan");
-		for(Agent a:data.running.values()){
-			if(a.getId().getName().equals(aid)){
-				data.running.remove(a.getId());
+		for(AID a:data.running.keySet()){
+			if(a.getName().equals(aid)){
+				data.running.remove(a);
+
+				for(AgentCenter ac: data.centers)
+					try {
+
+						DataHolder dh=DataHolder.getInstance();
+						ClientRequest request = new ClientRequest(
+							"http://"+ac.getAddress()+"/AgentEnvironment/rest/agents/running/"+aid);
+						request.accept("application/json");
+
+						ClientResponse<String> response = request.delete();
+
+						/*if (response.getStatus() != 201) {
+							throw new RuntimeException("Failed : HTTP error code : "
+								+ response.getStatus());
+						}
+
+						BufferedReader br = new BufferedReader(new InputStreamReader(
+							new ByteArrayInputStream(response.getEntity().getBytes())));
+
+						String output;
+						System.out.println("Output from Server .... \n");
+						while ((output = br.readLine()) != null) {
+							System.out.println(output);
+						}*/
+
+					  } catch (Exception e) {
+
+						e.printStackTrace();
+					  }
 				break;
 			}
 		}
