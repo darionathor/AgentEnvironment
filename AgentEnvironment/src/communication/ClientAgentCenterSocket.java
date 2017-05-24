@@ -2,7 +2,9 @@ package communication;
 
 import java.io.IOException;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -11,15 +13,17 @@ import javax.websocket.server.ServerEndpoint;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import data.DataHolder;
 import data.SocketMessage;
 import data.SocketOutMessage;
-
 @ServerEndpoint(value="/socket")
 public class ClientAgentCenterSocket {
 	@Inject ClientAgentCenterRest rest;
-
+	
 	@OnOpen
     public void onOpen(Session session) {
+    	DataHolder data=DataHolder.getInstance();
+    	data.sessions.add(session);
     	System.out.println("session open");
     	ObjectMapper om= new ObjectMapper();
     	String values;
@@ -56,5 +60,10 @@ public class ClientAgentCenterSocket {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    }
+    @OnClose
+    public void onClose(Session session){
+    	DataHolder data=DataHolder.getInstance();
+    	data.sessions.remove(session);
     }
 }

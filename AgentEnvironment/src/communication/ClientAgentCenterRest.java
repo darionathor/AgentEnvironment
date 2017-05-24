@@ -1,5 +1,6 @@
 package communication;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.ejb.Stateless;
@@ -11,6 +12,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.websocket.Session;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -29,6 +31,7 @@ import agents.Participant;
 import agents.Ping;
 import agents.Pong;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import data.ACLMessage;
@@ -37,12 +40,32 @@ import data.Agent;
 import data.AgentCenter;
 import data.AgentType;
 import data.DataHolder;
+import data.SocketOutMessage;
 @Path("/")
 @Stateless
 public class ClientAgentCenterRest {
-	
 	   DataHolder data= DataHolder.getInstance();
-	   @Inject AgentCenterAgentCenterRest rest;
+	   public void broadcast(){
+			System.out.println("session open");
+	    	DataHolder data=DataHolder.getInstance();
+	    	ObjectMapper om= new ObjectMapper();
+	    	String values;
+	    	for(Session session:data.sessions)
+			try {
+				SocketOutMessage mess= new SocketOutMessage();
+				mess.classes=getClasses();
+				mess.running=getRunning();
+				mess.performative=getMessages();
+				values = om.writeValueAsString(mess);
+		    	session.getBasicRemote().sendText(values);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	@GET
 	@Path("/test")
 	public String getTest(){
@@ -92,7 +115,8 @@ public class ClientAgentCenterRest {
 			data.running.put(pong.getId(),pong);
 		}
 		
-		
+
+		broadcast();
 		for(AgentCenter ac: data.centers)
 		try {
 
@@ -133,7 +157,7 @@ public class ClientAgentCenterRest {
 		for(AID a:data.running.keySet()){
 			if(a.getName().equals(aid)){
 				data.running.remove(a);
-
+				broadcast();
 				for(AgentCenter ac: data.centers)
 					try {
 

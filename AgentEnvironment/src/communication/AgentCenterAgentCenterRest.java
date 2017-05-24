@@ -1,9 +1,8 @@
 package communication;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,6 +26,8 @@ import data.DataHolder;
 @Path("/")
 public class AgentCenterAgentCenterRest {
 	DataHolder data=DataHolder.getInstance();
+	@Inject ClientAgentCenterRest rest;
+	
 	@POST
 	@Path("/nodes")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -373,8 +374,10 @@ public class AgentCenterAgentCenterRest {
 	public void postClasses(ArrayList<AgentType> types){
 		System.out.println("postClases");
 		for(AgentType tip:types){
-			if(!data.classes.contains(tip))
+			if(!data.classes.contains(tip)){
 				data.classes.add(tip);
+				rest.broadcast();
+			}
 		}
 	}
 	@POST
@@ -383,11 +386,14 @@ public class AgentCenterAgentCenterRest {
 	public void postRunning(ArrayList<AID> running){
 		System.out.println("postRunning");
 		for(AID tip:running){
-			if(!data.running.containsKey(tip))
+			if(!data.running.containsKey(tip)){
 				data.running.put(tip,null);
+				rest.broadcast();
+		}
 		}
 		
 	}
+	
 	@DELETE
 	@Path("node/{alias}")
 	public void deleteNode(@PathParam("alias") String alias){
@@ -395,7 +401,6 @@ public class AgentCenterAgentCenterRest {
 		for(AgentCenter ac:data.centers){
 			if(ac.getAlias().equals(alias)){
 				data.centers.remove(ac);
-				
 				
 				for(AgentType at:data.supports.get(ac)){
 					boolean delete=true;
@@ -427,7 +432,8 @@ public class AgentCenterAgentCenterRest {
 				for(AID a: data.running.keySet()){
 					if(a.getHost().equals(ac))data.running.remove(a);
 				}
-				
+
+				rest.broadcast();
 				break;
 			}
 		}

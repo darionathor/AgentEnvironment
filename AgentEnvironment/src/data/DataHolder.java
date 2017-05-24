@@ -3,9 +3,7 @@ package data;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.ejb.Singleton;
-
-import agents.Ping;
+import javax.websocket.Session;
 public class DataHolder {
 	public boolean MainServer=true;
 	public ArrayList<AgentType> classes=new ArrayList<AgentType>();
@@ -13,6 +11,7 @@ public class DataHolder {
 	public HashMap<AgentCenter,ArrayList<AgentType>> supports=new HashMap<AgentCenter, ArrayList<AgentType>>();
 	public AgentCenter agentCenter=null;
 	public ArrayList<AgentCenter> centers=new ArrayList<AgentCenter>();
+	public ArrayList<Session> sessions=new ArrayList<Session>();
 	private static DataHolder instance;
 	public static DataHolder getInstance(){
 
