@@ -1,9 +1,12 @@
 package communication;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
@@ -31,6 +34,8 @@ public class StartupTimer {
 		DataHolder dh=DataHolder.getInstance();
 		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 		ObjectName socketBindingMBean;
+		Properties prop=new Properties();
+		InputStream input=null;
 		try {
 			socketBindingMBean = new ObjectName("jboss.as:socket-binding-group=standard-sockets,socket-binding=http");
 
@@ -49,9 +54,15 @@ public class StartupTimer {
 			classes.add(new AgentType("initiator", "initiator"));
 			classes.add(new AgentType("participant", "participant"));
 			dh.supports.put(as, classes);
-    		if(!port.equals(8080)){
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			 input = classLoader.getResourceAsStream("config.properties");
+			
+			prop.load(input);
+			Integer mainPort=Integer.parseInt(prop.getProperty("masterPort"));
+			String address=prop.getProperty("masterAddress");
+    		if(!port.equals(mainPort)){
     			System.out.println("secondary server");
-    			dh.setSecondaryServer();
+    			dh.setSecondaryServer(address);
     			performCenterHandshake();
     		}
     	       timer.cancel();
@@ -110,11 +121,17 @@ public class StartupTimer {
 	private void performCenterHandshake() {
 		// TODO Auto-generated method stub
 		//1-post/node na master
+		Properties prop=new Properties();
+		InputStream input2=null;
 		 try {
-
+			 ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			 input2 = classLoader.getResourceAsStream("config.properties");
+			
+			prop.load(input2);
+			
 				DataHolder dh=DataHolder.getInstance();
 				ClientRequest request = new ClientRequest(
-					"http://localhost:8080/AgentEnvironment/rest/node");
+					"http://"+prop.getProperty("masterAddress")+"/AgentEnvironment/rest/node");
 				request.accept("application/json");
 				ObjectMapper om=new ObjectMapper();
 				String input = om.writeValueAsString(dh.agentCenter);

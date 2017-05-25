@@ -27,12 +27,12 @@ public class DataHolder {
 		System.out.println("kreirao dataholdera");
 		instance=this;
 	}
-	public void setSecondaryServer() {
+	public void setSecondaryServer(String address) {
 		// TODO Auto-generated method stub
 		MainServer=false;
 		AgentCenter main=new AgentCenter();
-		main.setAddress("localhost:8080");
-		main.setAlias("localhost:8080");
+		main.setAddress(address);
+		main.setAlias(address);
 		centers.add(main);
 	}
 }
