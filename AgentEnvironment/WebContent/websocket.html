@@ -7,7 +7,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
-<div ng-app="myApp" ng-controller="myCtrl">
+<div ng-app="myApp" ng-controller="myCtrl" style="float:left">
 <p>Klase<p>
 <select ng-model="selectedClass" ng-options="x for x in classes">
 </select>
@@ -51,7 +51,9 @@
  <input type="text" ng-model="inReplyTo">
     <button ng-click="send()">SEND</button>
 </div>
-
+<div id="chat" style="width:500px;height:500px;border:5px red;float:right;
+    overflow: scroll;">
+</div>
 <script>
 var app = angular.module('myApp', []);
 app.controller('myCtrl', function($scope, $http) {
@@ -73,9 +75,24 @@ app.controller('myCtrl', function($scope, $http) {
     
     ws.onmessage = function(message) {
         console.log(message);
+        var data;
+        try{
+		 data=JSON.parse(message.data);
+
+		 
+        }catch(err){
+
+			console.log(message.data)
+			var para = document.createElement("p");
+			 var node = document.createTextNode(message.data);
+			 para.appendChild(node);
+			 var element = document.getElementById("chat");
+			 element.appendChild(para);
+			return;
+        }
         	$scope.$apply(function() {
         		  $scope.classes=[];
-        		  var data=JSON.parse(message.data);
+        			 data=JSON.parse(message.data);
         	        $.each(data.classes,function(index,value){
 
         	            $scope.classes.push(value.name);

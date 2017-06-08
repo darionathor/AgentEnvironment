@@ -20,6 +20,7 @@ public class Ping extends Agent {
 	@Override
 	public void handleMessage(ACLMessage message) {
 		// TODO Auto-generated method stub
+		sendMessage("Message to Ping: " + message.content);
 		System.out.println("Message to Ping: " + message.content);
 		if (message.performative == Performative.REQUEST) { // inital request
 			// send a request to the Pong agent

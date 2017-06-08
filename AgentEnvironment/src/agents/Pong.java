@@ -12,6 +12,7 @@ public class Pong extends Agent {
 	@Override
 	public void handleMessage(ACLMessage message) {
 		// TODO Auto-generated method stub
+		sendMessage("Message to Pong: " + message.content+" counter: "+counter);
 		System.out.println("Message to Pong: " + message.content+" counter: "+counter);
 		ACLMessage reply = message.makeReply(Performative.INFORM);
 		reply.userArgs.put("pongCounter", ++counter);

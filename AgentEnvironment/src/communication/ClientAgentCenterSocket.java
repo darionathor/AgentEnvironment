@@ -20,6 +20,8 @@ import data.SocketOutMessage;
 public class ClientAgentCenterSocket {
 	@Inject ClientAgentCenterRest rest;
 	
+	
+	
 	@OnOpen
     public void onOpen(Session session) {
     	DataHolder data=DataHolder.getInstance();

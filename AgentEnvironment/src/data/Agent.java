@@ -1,5 +1,8 @@
 package data;
 
+import java.io.IOException;
+
+import javax.ejb.Stateful;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.MessageProducer;
@@ -7,8 +10,11 @@ import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.websocket.Session;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 
+@Stateful
 public abstract class Agent {
 	private AID id;
 	public abstract void handleMessage(ACLMessage message);
@@ -17,6 +23,20 @@ public abstract class Agent {
 	}
 	public void setId(AID id) {
 		this.id = id;
+	}
+	protected void sendMessage(String message){
+		System.out.println("sending message");
+    	DataHolder data=DataHolder.getInstance();
+    	for(Session session:data.sessions)
+		try {
+	    	session.getBasicRemote().sendText(message);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	protected void post(ACLMessage message){
 		Context context;
