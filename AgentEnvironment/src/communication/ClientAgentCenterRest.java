@@ -92,6 +92,7 @@ public class ClientAgentCenterRest {
 	@PUT
 	@Path("/agents/running/{type}/{name}")
 	public void putRunning(@PathParam("type") String type, @PathParam("name") String name){
+		
 		System.out.println(type+" agent postavljen "+name);
 		if(type.equals("ping")){
 			Ping ping=new Ping();

@@ -32,7 +32,23 @@
 </select>
 <p>Content</p><br>
  <input type="text" ng-model="Content">
-
+ 
+<p>Language</p><br>
+ <input type="text" ng-model="Language">
+<p>Encoding</p><br>
+ <input type="text" ng-model="Encoding">
+<p>Ontology</p><br>
+ <input type="text" ng-model="Ontology">
+<p>Protocol</p><br>
+ <input type="text" ng-model="Protocol">
+<p>conversationId</p><br>
+ <input type="text" ng-model="conversationId">
+<p>replyWith</p><br>
+ <input type="text" ng-model="replyWith">
+<p>replyBy</p><br>
+ <input type="number" ng-model="replyBy">
+<p>inReplyTo</p><br>
+ <input type="text" ng-model="inReplyTo">
     <button ng-click="send()">SEND</button>
 </div>
 
@@ -141,14 +157,14 @@ app.controller('myCtrl', function($scope, $http) {
 				replyTo:replyTo,
 				contentObj:null,
 				userArgs:null,
-				language:null,
-				encoding:null,
-				ontology:null,
-				protocol:null,
-				conversationId:null,
-				replyWith:null,
-				inReplyTo:null,
-				replyBy:null
+				language:$scope.Language,
+				encoding:$scope.Encoding,
+				ontology:$scope.Ontology,
+				protocol:$scope.Protocol,
+				conversationId:$scope.conversationId,
+				replyWith:$scope.replyWith,
+				inReplyTo:$scope.inReplyTo,
+				replyBy:$scope.replyBy
                 };
 
     	var message={obj:obj,type:"send"};
