@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Agent Environment Client</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<div ng-app="myApp" ng-controller="myCtrl">
+<p>Klase<p>
+<select ng-model="selectedClass" ng-options="x for x in classes">
+</select>
+ <input type="text" ng-model="name">
+    <button ng-click="put()">PUT</button>
+<p>Aktivni agenti</p>
+<select ng-model="selectedRunning" ng-options="x.name for x in running">
+</select>
+    <button ng-click="dele()">DELETE</button>
+<p>Send message</p>
+<p>Performative</p><br>
+<select ng-model="selectedPerformative" ng-options="x for x in performatives">
+</select>
+<p>Sender</p><br>
+<select ng-model="selectedSender" ng-options="x.name for x in running">
+</select>
+<p>Reciever</p><br>
+<select ng-model="selectedReciever" ng-options="x.name for x in running">
+</select>
+<p>ReplyTo<p><br>
+<select ng-model="ReplyTo" ng-options="x.name for x in running">
+</select>
+<p>Content</p><br>
+ <input type="text" ng-model="Content">
+
+    <button ng-click="send()">SEND</button>
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope, $http) {
+	$scope.name="";
+	$scope.selectedClass="";
+	$scope.selectedRunning="";
+    $scope.classes = [];
+    $scope.running = [];
+    $scope.performatives=[];
+    $scope.put = function() {
+        $.ajax({
+        url: "rest/agents/running/"+$scope.selectedClass+"/"+$scope.name,
+        type: 'PUT',
+        success: function(data, status){
+            console.log(data);
+        }
+      });
+    }
+      $scope.dele = function() {
+          console.log("del");
+            $.ajax({
+            url: "rest/agents/running/"+$scope.selectedRunning.name,
+            type: 'DELETE',
+            success: function(data, status){
+                console.log(data);
+                console.log();
+            }
+          });
+      }
+	    $.get("rest/agents/classes/", function(data, status){
+	        console.log(data);
+	      	$scope.$apply(function() {
+	        $scope.classes=[];
+	        $.each(data,function(index,value){
+	
+	            $scope.classes.push(value.name);
+	            })
+	        });
+	    });
+	    $.get("rest/agents/running/", function(data, status){
+	        console.log(data);
+	      	$scope.$apply(function() {
+	        $scope.running=[];
+	        $.each(data,function(index,value){
+	
+	            $scope.running.push(value);
+	            })
+	    });
+	    });
+	    $.get("rest/messages/", function(data, status){
+	        console.log(data);
+	      	$scope.$apply(function() {
+	        $scope.performatives=[];
+	        $.each(data,function(index,value){
+	
+	            $scope.performatives.push(value);
+	            })
+	    });
+	    });
+    $scope.send = function() {
+        //var sender={name:$scope.selectedSender.name,host:{address:$scope.selectedSender.host.address,alias:$scope.selectedSender.host.alias},type:{module:$scope.selectedSender.type.module,name:$scope.selectedSender.type.name}}
+        //var reciever={name:$scope.selectedReciever.name,host:{address:$scope.selectedReciever.host.address,alias:$scope.selectedReciever.host.alias},type:{module:$scope.selectedReciever.type.module,name:$scope.selectedReciever.type.name}}
+        //var replyTo={name:$scope.ReplyTo.name,host:{address:$scope.ReplyTo.host.address,alias:$scope.ReplyTo.host.alias},type:{module:$scope.ReplyTo.type.module,name:$scope.ReplyTo.type.name}}
+        var sender=selected($scope.selectedSender);
+        var reciever=selected($scope.selectedReciever);
+        var replyTo=selected($scope.ReplyTo);
+         var obj={content:$scope.Content,
+				performative:$scope.selectedPerformative,
+				sender:sender,
+				receivers:[reciever],
+				replyTo:replyTo,
+				contentObj:null,
+				userArgs:null,
+				language:null,
+				encoding:null,
+				ontology:null,
+				protocol:null,
+				conversationId:null,
+				replyWith:null,
+				inReplyTo:null,
+				replyBy:null
+                };
+        var data=JSON.stringify(obj);
+        console.log("send");
+          $.ajax({
+          url: "rest/messages",
+          type: 'POST',
+          success: function(data, status){
+              console.log(data);
+          },
+          data:data,
+          contentType:"application/json; charset=utf-8"
+        });
+    }
+    
+});
+function selected(selected){
+	if(selected!=undefined)
+	return {name:selected.name,host:{address:selected.host.address,alias:selected.host.alias},type:{module:selected.type.module,name:selected.type.name}}
+    return null;
+}
+</script>
+</body>
+</html>
