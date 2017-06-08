@@ -12,7 +12,11 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.websocket.Session;
 
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Stateful
 public abstract class Agent {
@@ -37,6 +41,34 @@ public abstract class Agent {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+    	for(AgentCenter ac:data.centers)
+			try {
+
+				ClientRequest request = new ClientRequest(
+					"http://"+ac.getAddress()+"/AgentEnvironment/rest/agentMessage");
+				request.accept("text/plain");
+				request.body("text/plain", message);
+
+				ClientResponse<String> response = request.post(String.class);
+
+				/*if (response.getStatus() != 201) {
+					throw new RuntimeException("Failed : HTTP error code : "
+						+ response.getStatus());
+				}
+
+				BufferedReader br = new BufferedReader(new InputStreamReader(
+					new ByteArrayInputStream(response.getEntity().getBytes())));
+
+				String output;
+				System.out.println("Output from Server .... \n");
+				while ((output = br.readLine()) != null) {
+					System.out.println(output);
+				}*/
+
+			  } catch (Exception e) {
+
+				e.printStackTrace();
+			  }
 	}
 	protected void post(ACLMessage message){
 		Context context;

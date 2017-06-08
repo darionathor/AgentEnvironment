@@ -1,8 +1,10 @@
 package communication;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
+import javax.websocket.Session;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,6 +17,7 @@ import javax.ws.rs.core.MediaType;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,7 +30,23 @@ import data.DataHolder;
 public class AgentCenterAgentCenterRest {
 	DataHolder data=DataHolder.getInstance();
 	@Inject ClientAgentCenterRest rest;
-	
+	@POST
+	@Path("/agentMessage")
+	@Consumes(MediaType.TEXT_PLAIN)
+	public void agentMessage(String message){
+		System.out.println("sending message");
+	DataHolder data=DataHolder.getInstance();
+	for(Session session:data.sessions)
+	try {
+    	session.getBasicRemote().sendText(message);
+	} catch (JsonProcessingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	}
 	@POST
 	@Path("/nodes")
 	@Consumes(MediaType.APPLICATION_JSON)
