@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateful;
 
 import data.ACLMessage;
 import data.AID;
@@ -14,6 +15,7 @@ import data.AgentType;
 import data.DataHolder;
 import data.Performative;
 
+@Stateful
 public class Ping extends Agent {
 	DataHolder data=DataHolder.getInstance();
 

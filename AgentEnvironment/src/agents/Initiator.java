@@ -1,12 +1,16 @@
 package agents;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+
+import javax.ejb.Stateful;
 
 import data.ACLMessage;
 import data.AID;
 import data.Agent;
 import data.Performative;
 
+@Stateful
 public class Initiator extends Agent {
 	private int pendingProposals;
 	@Override
@@ -16,9 +20,14 @@ public class Initiator extends Agent {
 		case REQUEST:
 			sendMessage("sending proposals");
 			System.out.println("sending proposals");
-			AID[] participants = (AID[]) message.contentObj;
-			sendCfps(participants);
-			pendingProposals = participants.length;
+			AID[] activeAgents = getActiveAgents();
+			ArrayList<AID> participants= new ArrayList<>();
+			for(AID a:activeAgents){
+				if(a.getType().getName().equals("participant"))
+					participants.add(a);
+			}
+			sendCfps( participants.toArray(new AID[1]));
+			pendingProposals = participants.size();
 			break;
 		case ACCEPT_PROPOSAL:
 			sendMessage("recieved an accept");

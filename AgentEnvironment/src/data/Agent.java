@@ -28,6 +28,11 @@ public abstract class Agent {
 	public void setId(AID id) {
 		this.id = id;
 	}
+	protected AID[] getActiveAgents(){
+
+    	DataHolder data=DataHolder.getInstance();
+    	return data.running.keySet().toArray(new AID[1]);
+	}
 	protected void sendMessage(String message){
 		System.out.println("sending message");
     	DataHolder data=DataHolder.getInstance();

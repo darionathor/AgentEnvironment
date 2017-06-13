@@ -1,9 +1,12 @@
 package agents;
 
+import javax.ejb.Stateful;
+
 import data.ACLMessage;
 import data.Agent;
 import data.Performative;
 
+@Stateful
 public class Participant extends Agent {
 
 	@Override

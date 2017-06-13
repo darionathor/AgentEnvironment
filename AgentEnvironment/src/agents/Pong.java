@@ -1,10 +1,13 @@
 package agents;
 
+import javax.ejb.Stateful;
+
 import data.ACLMessage;
 import data.Agent;
 import data.DataHolder;
 import data.Performative;
 
+@Stateful
 public class Pong extends Agent {
 	private int counter=0;
 	 DataHolder data=DataHolder.getInstance();
