@@ -66,6 +66,49 @@ public class ClientAgentCenterRest {
 				e.printStackTrace();
 			}
 		}
+	   
+	   protected void sendMessage(String message){
+			System.out.println("sending message");
+	    	DataHolder data=DataHolder.getInstance();
+	    	for(Session session:data.sessions)
+			try {
+		    	session.getBasicRemote().sendText(message);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	for(AgentCenter ac:data.centers)
+				try {
+
+					ClientRequest request = new ClientRequest(
+						"http://"+ac.getAddress()+"/AgentEnvironment/rest/agentMessage");
+					request.accept("text/plain");
+					request.body("text/plain", message);
+
+					ClientResponse<String> response = request.post(String.class);
+
+					/*if (response.getStatus() != 201) {
+						throw new RuntimeException("Failed : HTTP error code : "
+							+ response.getStatus());
+					}
+
+					BufferedReader br = new BufferedReader(new InputStreamReader(
+						new ByteArrayInputStream(response.getEntity().getBytes())));
+
+					String output;
+					System.out.println("Output from Server .... \n");
+					while ((output = br.readLine()) != null) {
+						System.out.println(output);
+					}*/
+
+				  } catch (Exception e) {
+
+					e.printStackTrace();
+				  }
+		}
 	@GET
 	@Path("/test")
 	public String getTest(){
@@ -92,7 +135,13 @@ public class ClientAgentCenterRest {
 	@PUT
 	@Path("/agents/running/{type}/{name}")
 	public void putRunning(@PathParam("type") String type, @PathParam("name") String name){
-		
+		for(AID a:data.running.keySet()){
+			if(a.getName().equals(name)){
+
+				sendMessage("agent sa datim nazivom vec postoji");
+				return;
+			}
+		}
 		System.out.println(type+" agent postavljen "+name);
 		if(type.equals("ping")){
 			Ping ping=new Ping();
@@ -114,9 +163,10 @@ public class ClientAgentCenterRest {
 			Participant pong=new Participant();
 			pong.setId(new AID(name, data.agentCenter, new AgentType("participant", "participant")));
 			data.running.put(pong.getId(),pong);
-		}
+		}else{return;}
 		
 
+		sendMessage(type+" agent postavljen "+name);
 		broadcast();
 		for(AgentCenter ac: data.centers)
 		try {
@@ -159,6 +209,7 @@ public class ClientAgentCenterRest {
 			if(a.getName().equals(aid)){
 				data.running.remove(a);
 				broadcast();
+				sendMessage("agent zaustavljen: "+aid);
 				for(AgentCenter ac: data.centers)
 					try {
 
