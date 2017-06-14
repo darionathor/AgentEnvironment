@@ -20,7 +20,7 @@ public class Coordinator extends Agent {
 	public void handleMessage(ACLMessage message) {
 		// TODO Auto-generated method stub
 		if(message.performative.equals(Performative.REQUEST)){
-			File f = new File("e:\\temp");
+			File f = new File(message.content);
 			ArrayList<ACLMessage> me=new ArrayList<ACLMessage>();
 			for(File fa:f.listFiles()){
 				AID a=createAgent("worker",UUID.randomUUID().toString());
