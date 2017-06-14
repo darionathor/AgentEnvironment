@@ -3,6 +3,7 @@ package data;
 import java.io.IOException;
 
 import javax.ejb.Stateful;
+import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.MessageProducer;
@@ -16,10 +17,12 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import communication.ClientAgentCenterRest;
 
 @Stateful
 public abstract class Agent {
+	@Inject
+	ClientAgentCenterRest rest;
 	private AID id;
 	public abstract void handleMessage(ACLMessage message);
 	public AID getId() {
@@ -32,6 +35,69 @@ public abstract class Agent {
 
     	DataHolder data=DataHolder.getInstance();
     	return data.running.keySet().toArray(new AID[1]);
+	}
+	protected void deleteAgent(String name){
+		DataHolder data=DataHolder.getInstance();
+		try {
+
+			ClientRequest request = new ClientRequest(
+				"http://"+data.agentCenter.getAddress()+"/AgentEnvironment/rest/agents/running/"+name);
+			request.accept("text/plain");
+
+			ClientResponse<String> response = request.delete();
+
+			/*if (response.getStatus() != 201) {
+				throw new RuntimeException("Failed : HTTP error code : "
+					+ response.getStatus());
+			}
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+				new ByteArrayInputStream(response.getEntity().getBytes())));
+
+			String output;
+			System.out.println("Output from Server .... \n");
+			while ((output = br.readLine()) != null) {
+				System.out.println(output);
+			}*/
+
+		  } catch (Exception e) {
+
+			e.printStackTrace();
+		  }
+	}
+	protected AID createAgent(String type,String name){
+		DataHolder data=DataHolder.getInstance();
+		try {
+
+			ClientRequest request = new ClientRequest(
+				"http://"+data.agentCenter.getAddress()+"/AgentEnvironment/rest/agents/running/"+type+"/"+name);
+			request.accept("text/plain");
+
+			ClientResponse<String> response = request.put();
+
+			/*if (response.getStatus() != 201) {
+				throw new RuntimeException("Failed : HTTP error code : "
+					+ response.getStatus());
+			}
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+				new ByteArrayInputStream(response.getEntity().getBytes())));
+
+			String output;
+			System.out.println("Output from Server .... \n");
+			while ((output = br.readLine()) != null) {
+				System.out.println(output);
+			}*/
+
+		  } catch (Exception e) {
+
+			e.printStackTrace();
+		  }
+    	for(AID a:data.running.keySet()){
+    		if(a.getName().equals(name))
+    			return a;
+    	}
+		return null;
 	}
 	protected void sendMessage(String message){
 		System.out.println("sending message");

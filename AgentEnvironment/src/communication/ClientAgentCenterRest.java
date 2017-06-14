@@ -3,8 +3,8 @@ package communication;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.MessageProducer;
@@ -26,17 +26,18 @@ import javax.ws.rs.core.MediaType;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 
+import agents.Coordinator;
 import agents.Initiator;
 import agents.Participant;
 import agents.Ping;
 import agents.Pong;
+import agents.Worker;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import data.ACLMessage;
 import data.AID;
-import data.Agent;
 import data.AgentCenter;
 import data.AgentType;
 import data.DataHolder;
@@ -145,23 +146,33 @@ public class ClientAgentCenterRest {
 		System.out.println(type+" agent postavljen "+name);
 		if(type.equals("ping")){
 			Ping ping=new Ping();
-			ping.setId(new AID(name, data.agentCenter, new AgentType("ping", "ping")));
+			ping.setId(new AID(name, data.agentCenter, new AgentType("ping", "agents")));
 			data.running.put(ping.getId(),ping);
 			System.out.println("PING DODAT");
 		}else if(type.equals("pong")){
 
 			Pong pong=new Pong();
-			pong.setId(new AID(name, data.agentCenter, new AgentType("pong", "pong")));
+			pong.setId(new AID(name, data.agentCenter, new AgentType("pong", "agents")));
 			data.running.put(pong.getId(),pong);
 		}else if(type.equals("initiator")){
 
 			Initiator pong=new Initiator();
-			pong.setId(new AID(name, data.agentCenter, new AgentType("initiator", "initiator")));
+			pong.setId(new AID(name, data.agentCenter, new AgentType("initiator", "agents")));
 			data.running.put(pong.getId(),pong);
 		}else if(type.equals("participant")){
 
 			Participant pong=new Participant();
-			pong.setId(new AID(name, data.agentCenter, new AgentType("participant", "participant")));
+			pong.setId(new AID(name, data.agentCenter, new AgentType("participant", "agents")));
+			data.running.put(pong.getId(),pong);
+		}else if(type.equals("worker")){
+
+			Worker pong=new Worker();
+			pong.setId(new AID(name, data.agentCenter, new AgentType("worker", "agents")));
+			data.running.put(pong.getId(),pong);
+		}else if(type.equals("coordinator")){
+
+			Coordinator pong=new Coordinator();
+			pong.setId(new AID(name, data.agentCenter, new AgentType("coordinator", "agents")));
 			data.running.put(pong.getId(),pong);
 		}else{return;}
 		

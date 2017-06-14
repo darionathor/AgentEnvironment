@@ -20,10 +20,12 @@ public class DataHolder {
 		return instance;
 	}
 	protected DataHolder(){
-		classes.add(new AgentType("ping", "ping"));
-		classes.add(new AgentType("pong", "pong"));
-		classes.add(new AgentType("initiator", "initiator"));
-		classes.add(new AgentType("participant", "participant"));
+		classes.add(new AgentType("ping", "agents"));
+		classes.add(new AgentType("pong", "agents"));
+		classes.add(new AgentType("initiator", "agents"));
+		classes.add(new AgentType("participant", "agents"));
+		classes.add(new AgentType("worker", "agents"));
+		classes.add(new AgentType("coordinator", "agents"));
 		System.out.println("kreirao dataholdera");
 		instance=this;
 	}

@@ -49,10 +49,12 @@ public class StartupTimer {
 			dh.agentCenter=as;
 
 			ArrayList<AgentType> classes= new ArrayList<AgentType>();
-			classes.add(new AgentType("ping", "ping"));
-			classes.add(new AgentType("pong", "pong"));
-			classes.add(new AgentType("initiator", "initiator"));
-			classes.add(new AgentType("participant", "participant"));
+			classes.add(new AgentType("ping", "agents"));
+			classes.add(new AgentType("pong", "agents"));
+			classes.add(new AgentType("initiator", "agents"));
+			classes.add(new AgentType("participant", "agents"));
+			classes.add(new AgentType("worker", "agents"));
+			classes.add(new AgentType("coordinator", "agents"));
 			dh.supports.put(as, classes);
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			 input = classLoader.getResourceAsStream("config.properties");
