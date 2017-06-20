@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
 
+
 import data.ACLMessage;
 import data.AID;
 import data.Agent;
@@ -18,7 +19,6 @@ import data.Performative;
 @Stateful
 public class Ping extends Agent {
 	DataHolder data=DataHolder.getInstance();
-
 	@Override
 	public void handleMessage(ACLMessage message) {
 		// TODO Auto-generated method stub

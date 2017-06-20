@@ -113,7 +113,7 @@ public class StartupTimer {
 
 				e.printStackTrace();
 				System.out.println("failed again");
-				rest.removeNode(ac);
+	            rest.removeNode(ac);
 				//TODO onfail
 			  }
 		  }

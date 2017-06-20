@@ -25,9 +25,8 @@ import data.AID;
 import data.AgentCenter;
 import data.AgentType;
 import data.DataHolder;
-
 @Path("/")
-public class AgentCenterAgentCenterRest {
+public class AgentCenterAgentCenterRest{
 	DataHolder data=DataHolder.getInstance();
 	@Inject ClientAgentCenterRest rest;
 	@POST
@@ -417,6 +416,7 @@ public class AgentCenterAgentCenterRest {
 	@Path("node/{alias}")
 	public void deleteNode(@PathParam("alias") String alias){
 		System.out.println("deleteNode");
+		rest.sendMessage("delete node: "+alias);
 		for(AgentCenter ac:data.centers){
 			if(ac.getAlias().equals(alias)){
 				data.centers.remove(ac);
@@ -448,14 +448,17 @@ public class AgentCenterAgentCenterRest {
 						data.classes.remove(at);
 				};
 				data.supports.remove(ac);
+				ArrayList<AID> removal= new ArrayList<AID>();
 				for(AID a: data.running.keySet()){
-					if(a.getHost().equals(ac))data.running.remove(a);
+					if(a.getHost().equals(ac))removal.add(a);
 				}
-
+				for(AID a:removal)
+				    data.running.remove(a);
 				rest.broadcast();
 				break;
 			}
 		}
+		
 	}
 	@GET
 	@Path("node/")

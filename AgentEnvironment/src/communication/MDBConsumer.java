@@ -44,6 +44,8 @@ public class MDBConsumer implements MessageListener {
 						if(!centers.contains(a.getHost()))centers.add(a.getHost());
 					}
 				}
+				if(!message.forwardedToOtherNodes){
+				    message.forwardedToOtherNodes=true;
 				for(AgentCenter ac:centers)
 				try {
 
@@ -74,6 +76,8 @@ public class MDBConsumer implements MessageListener {
 
 					e.printStackTrace();
 				  }
+
+	            }
 			} catch (JMSException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

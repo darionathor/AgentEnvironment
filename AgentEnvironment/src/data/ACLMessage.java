@@ -20,8 +20,10 @@ public class ACLMessage implements Serializable {
 	public String replyWith;
 	public String inReplyTo;
 	public Long replyBy;
+	public boolean forwardedToOtherNodes;
 	public ACLMessage() {
 		super();
+		forwardedToOtherNodes=false;
 		receivers=new ArrayList<AID>();
 		userArgs=new HashMap<String, Object>();
 	}public boolean canReplyTo() {

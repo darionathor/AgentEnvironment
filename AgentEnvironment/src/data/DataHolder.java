@@ -1,7 +1,9 @@
 package data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.websocket.Session;
 public class DataHolder {
@@ -10,14 +12,14 @@ public class DataHolder {
 	public HashMap<AID,Agent> running=new HashMap<AID,Agent>();
 	public HashMap<AgentCenter,ArrayList<AgentType>> supports=new HashMap<AgentCenter, ArrayList<AgentType>>();
 	public AgentCenter agentCenter=null;
-	public ArrayList<AgentCenter> centers=new ArrayList<AgentCenter>();
+    public List<AgentCenter> centers= new ArrayList<AgentCenter>();
 	public ArrayList<Session> sessions=new ArrayList<Session>();
 	private static DataHolder instance;
 	public static DataHolder getInstance(){
 
 		if(instance==null)
 		instance=new DataHolder();
-		return instance;
+		 return  instance;
 	}
 	protected DataHolder(){
 		classes.add(new AgentType("ping", "agents"));

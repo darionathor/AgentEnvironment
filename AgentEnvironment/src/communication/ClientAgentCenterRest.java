@@ -68,7 +68,7 @@ public class ClientAgentCenterRest {
 			}
 		}
 	   
-	   protected void sendMessage(String message){
+	   public void sendMessage(String message){
 			System.out.println("sending message");
 	    	DataHolder data=DataHolder.getInstance();
 	    	for(Session session:data.sessions)
@@ -220,7 +220,16 @@ public class ClientAgentCenterRest {
 			if(a.getName().equals(aid)){
 				data.running.remove(a);
 				broadcast();
-				sendMessage("agent zaustavljen: "+aid);
+				for(Session session:data.sessions)
+		            try {
+		                session.getBasicRemote().sendText("agent zaustavljen: "+aid);
+		            } catch (JsonProcessingException e) {
+		                // TODO Auto-generated catch block
+		                e.printStackTrace();
+		            } catch (IOException e) {
+		                // TODO Auto-generated catch block
+		                e.printStackTrace();
+		            }
 				for(AgentCenter ac: data.centers)
 					try {
 

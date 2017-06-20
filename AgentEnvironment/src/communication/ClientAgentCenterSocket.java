@@ -57,7 +57,13 @@ public class ClientAgentCenterSocket {
 				rest.deleteRunning(sm.getName());
 			}if(sm.getType().equals("send")){
 				rest.postMessages(sm.getObj());
-			}
+			}if(sm.getType().equals("getClasses")){
+                session.getBasicRemote().sendObject(rest.getClasses());
+            }if(sm.getType().equals("getRunning")){
+                session.getBasicRemote().sendObject(rest.getRunning());
+            }if(sm.getType().equals("getPerformatives")){
+                session.getBasicRemote().sendObject(rest.getMessages());
+            }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
